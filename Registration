@@ -1,0 +1,55 @@
+<%
+Class.forName("com.mysql.jdbc.Driver");
+String jdbcurl = "jdbc:mysql://localhost:3306/spe";
+String Username="root";
+String Password="root";
+Connection con = DriverManager.getConnection(jdbcurl, Username, Password);
+Statement stmt = con.createStatement();
+
+String fname = request.getParameter("f_name");
+String email = request.getParameter("email");
+String contact = request.getParameter("contact");
+String gender = request.getParameter("gen");
+String passout = request.getParameter("pass");
+String branch = request.getParameter("branch");
+String pswd = request.getParameter("password");
+String city = request.getParameter("city");
+String highp = request.getParameter("high");
+String interp = request.getParameter("inter");
+//String status="on";
+String query="insert into
+register(fname,email,contact,gender,passout,branch,password,city,highschool,intermediate)
+values('"+fname+"','"+email+"','"+contact+"','"+gender+"','"+passout+"','"+branch+"','"+pswd
++"','"+city+"','"+highp+"','"+interp+"')" ;
+stmt.executeUpdate(query);
+response.sendRedirect("main.jsp");
+%>
+<%
+try
+{
+Class.forName("com.mysql.jdbc.Driver");
+Connectioncon1=DriverManager.getConnection("jdbc:mysql://localhost:3306/spe","root",roo
+t");
+PreparedStatement ps1=con1.prepareStatement("select * from register where email=? ");
+ps1.setString(1, email);
+ResultSet rs=ps1.executeQuery();
+if(rs.next())
+{
+String messageBody="Your have been registered. Thankyou";
+String subject="Registration";
+mail.Mailerr.send(email, subject, messageBody);
+response.sendRedirect("Home.jsp");
+}
+else
+{
+
+26
+System.out.println("ERROR");
+}
+
+}
+catch(Exception e)
+{
+out.print(e);
+}
+%>
