@@ -1,0 +1,107 @@
+var Timer;
+var totalSeconds;
+function CreateTimer(TimerID, Time)
+{
+Timer = document.getElementById(TimerID);
+TotalSeconds = Time;
+UpdateTimer()
+window.setTimeout("Tick()", 1000);
+}
+function Tick()
+{
+TotalSeconds -= 1;
+if(TotalSeconds == 10)
+{
+document.getElementById("MyTimer").style.background = "red";;
+}
+if(TotalSeconds ==-1)
+{
+window.location="saveAnswer.jsp";
+}
+else
+{
+UpdateTimer()
+window.setTimeout("Tick()", 1000);
+}
+}
+function UpdateTimer() {
+Timer.innerHTML = TotalSeconds;
+}
+<%
+response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
+boolean start = (boolean)session.getAttribute("start");
+ArrayList<Question> qlist = (ArrayList<Question>)session.getAttribute("list");
+if(start)
+{
+int qno = (Integer)session.getAttribute("qno");
+String examStatus = (String)session.getAttribute("examStatus");
+int sizeOfQlist = qlist.size();
+if(sizeOfQlist == 10)
+{
+%>
+<div class="timer" id="MyTimer">
+<div id='timer'></div>
+
+<script type="text/javascript">window.onload =
+CreateTimer("timer",30);</script>
+</div>
+
+28
+
+<%
+if(qno >= 10)
+{
+session.removeAttribute("examStatus");
+session.removeAttribute("list");
+session.removeAttribute("start");
+session.removeAttribute("question");
+response.sendRedirect("Student_subAvg.jsp");
+}
+else
+{
+Question ques = qlist.get(qno);
+int nextQno = ++qno;
+session.setAttribute("qno", nextQno);
+session.setAttribute("question", ques);
+%>
+<p><span>Question <%=qno%></span><h2><%=ques.getQues()
+%></h2></p>
+<form action="saveAnswer.jsp" method="post">
+<input type="radio" id="r1" name="userAns"
+value="<%=ques.getOpt_one()%>"> <%=ques.getOpt_one()%><br>
+<input type="radio" id="r2" name="userAns"
+value="<%=ques.getOpt_two()%>"> <%=ques.getOpt_two()%><br>
+<input type="radio" id="r3" name="userAns"
+value="<%=ques.getOpt_three()%>"><%=ques.getOpt_three()%><br>
+<input type="radio" id="r4" name="userAns"
+value="<%=ques.getOpt_four()%>"><%=ques.getOpt_four()%><br>
+<%
+if(qno==10)
+{
+%>
+<input type="submit" class="btn btn-pill btn-primary" value="Submit">
+<%
+}
+else
+{
+%>
+<input type="submit" value="Next Question">
+<%
+}
+%>
+</form>
+<%
+}
+}
+else
+{
+out.println("<p style='text-align: center; font-size: 20px;'>Something
+wrong please try another Subject.<br>or<br>Contact Your Examiner.</p><center><a
+
+29
+
+href='subexam.jsp'><button class=\"btn btn-pill btn-primary\">Go
+Back</button></a></center>");
+}
+}
+%>
