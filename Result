@@ -1,0 +1,64 @@
+<%
+Statement st = con.createStatement();
+ResultSet rs3 = st.executeQuery("select distinct date,status from answers where
+semail ='"+email+"' and subject='"+subject+"'");
+while(rs3.next())
+{
+String currentDate = rs3.getString("date");
+String status = rs3.getString("status");
+if(status.equalsIgnoreCase("ended"))
+{
+String query = "select * from answers where semail ='"+email+"' and
+date='"+currentDate+"' and subject='"+subject+"'";
+int correct = 0;
+int wrong = 0;
+int unAttempt =0;
+Statement st2 = con.createStatement();
+ResultSet rs4 = st2.executeQuery(query);
+while(rs4.next())
+{
+String userans = rs4.getString("user_ans");
+String correctans = rs4.getString("correct_ans");
+if(userans.equalsIgnoreCase(correctans))
+{
+correct++;
+}
+else if(userans.equalsIgnoreCase("Not Attempt"))
+{
+unAttempt++;
+}
+else
+{
+wrong++;
+}
+}//end of while
+%>
+<tbody>
+<tr>
+<td><%=subject %> </td>
+<td><%=currentDate %> </td>
+<td><%=correct+wrong+unAttempt %></td>
+<td><%=correct %></td>
+<td><%=wrong %></td>
+
+31
+<td><%=unAttempt%></td>
+</tr>
+</tbody>
+<%
+}
+else
+{
+%>
+<tbody>
+<tr>
+<td><%=subject %> </td>
+<td><%=currentDate %> </td>
+<td colspan="4">You didn't complete your exam.</td>
+<td style="color: red;">Blocked</td>
+</tr>
+</tbody>
+<%
+}
+}
+%>
